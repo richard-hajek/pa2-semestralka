@@ -1,0 +1,61 @@
+This project will implement at least 2 separate inheritance trees.
+
+# Fragments
+
+As described in zadanani.txt, fragments serve as implementations of the core functionalities of the game.
+As described in zadanani.txt, fragments implement the following methods:
+    Setup, RequestDimensions, Load, Ready, Render, Update, SetWindow, ShareWindow
+    For their API refer to zadanani.txt
+
+At least all of these classes implement Fragment:
+                             +--------+
+    +---------+---------+----+Fragment+----+--------+--------+--------+
+    |         |         |    +----+---+    |        |        |        |
+    |         |         |         |        |        |        |        |
+    |         |         |         |        |        |        |        |
++---+---+ +---+---+ +---+-----+ +-+--+ +---+--+ +---+--+ +---+---+ +--+---+
+|Display| |Enemies| |GameStats| |Help| |Player| |Rounds| |Terrain| |Towers|
++-------+ +-------+ +---------+ +----+ +------+ +------+ +-------+ +------+
+
+Display shall prepare ncurses
+
+GameStats shall keep track of money, health and other core information
+
+Terrain shall implement loading and drawing terrain
+
+Towers shall update, draw and build towers
+
+Enemies shall spawn, update and destroy enemies
+
+Help shall display controls and game content
+
+Player shall implement the input
+
+Rounds shall implement increasing the difficulty, and keeping track of number of waves
+
+    (Waves and rounds are used interchangeably)
+
+For more detailed diagram, run `make doc` and see the generated documentation
+
+# Drawable
+
+Drawable is a pure virtual class, describing all things that are drawable onto the terrain.
+It is implemented by Tower, Enemy and Tile.
+
+      +--------+
+  +---+Drawable+--+
+  |   +---+----+  |
+  |       |       |
++-+--+ +--+--+ +--+--+
+|Tile| |Tower| |Enemy|
++----+ +-----+ +-----+
+
+All of these shall implement GetX, Y methods and GetChar methods.
+
+Tile - Unit of terrain, implements IsWalkable() for enemies and IsBuildable() for towers
+
+Tower - Buildable defense unit, will attack enemies on sight
+
+Enemy - The antagonist, will spawn and try to get to the other side of the map
+
+See generated documentation for detailed description of the above classes.

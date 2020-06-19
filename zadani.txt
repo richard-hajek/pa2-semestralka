@@ -1,0 +1,115 @@
+# TowerTwist - Tower Defense by Richard Hájek
+
+This project's goal will be to implement a tower defense game.
+This tower defense will implement:
+    - Dynamic towers and enemies, read from a setup file
+    - Dynamic level design, read from setup file
+    - Infinite waves with increasing difficulty
+    - Save and load saved games
+    - A* and DFS
+    - Game over, when health reaches zero
+
+Preview:
+```
+-------------------------------------------------------------------------------
+| HEALTH: 100 | MONEY: 010 | SCORE: 0000 | WAVE:   1 | REMAINING: 00010       |
+-------------------------------------------------------------------------------
+############################################################
+#                                                          #
+#     ...................%%%%%%%%%%.............         . .
+...   .                #                       .         . #
+# .....                #                       ........... #
+############################################################
+
+WASD - Move Pointer
+P - Build Shooter
+```
+
+## Game class
+
+The main goal is to implement a game class, which shall have the following API:
+
+### API
+
+    Game();
+        Default constructor
+
+    bool Setup(const std::string &setupFile);
+        Setup game's properties from setupFile
+        setupFile - Setup file to load
+        returns true on success
+
+    bool NewGame(const std::string& mapName);
+        Start a new game on map mapName
+        mapName - map to load
+        return true on success
+
+    bool LoadGame(const std::string& saveFile);
+        Load a saved game
+        saveFile - Location of saved game
+        returns true on success
+
+        NewGame and LoadGame shall never be called on the same instance of this class
+
+    void Start();
+        Start the main game loop
+
+    ~Game();
+        Clean all data
+
+
+## Fragment
+Provides core functionality for this game
+It is an abstract interface for individual game mechanics
+
+### Fragment Life Cycle
+
+1. Constructor
+    Create fragment
+2. Setup
+    Read setup file
+3. Load ( for a saved game ) or New ( for a new game )
+    Read save file, or prepare a new game
+4. RequestWindowDimensions / SetWindow
+    If applicable, request fragment's window size
+5. Ready
+    Prepare for fragment start
+6. Updates and Renders
+    Draw and update methods
+7. Destructor
+    Destroy fragment
+
+### API:
+    Fragment(Game * game)
+        Constructor
+
+    virtual bool Setup(TSVReader & reader)
+        Read from data from setup file
+        reader - reader of setup.tsv file
+
+    void RequestDimensions(int & width, int & height)
+        Fragments that require a WINDOW request it's size here
+        Will leave unchanged for no window
+
+    bool Load(TSVReader & reader)
+        Fragments that load save files will do so here
+        reader - reader of save.tsv file
+
+    void Ready()
+        Gets called before Render and Update
+
+    void Render()
+        Draw fragment
+
+    void Update(double delta)
+        Update fragment with delta seconds
+
+    ~Fragment()
+        Destroy fragment
+
+    SetWindow(WINDOW * window)
+        Set fragment's window
+
+    WINDOW * ShareWindow()
+        Fragments may share their drawing space, if they do,
+        they will share it here
